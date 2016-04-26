@@ -2,10 +2,12 @@
 # coding=utf-8
 import os
 
+vimrcStr = """ 
+set undofile 
+set undodir=%s 
+""";
 
 def vimrcSetup():
-    vimrcStr = """ set undofile 
-    set undodir=%s """;
     undoDir = '~/.vim/undo'
     undoDir = os.path.expanduser(undoDir);
     if os.path.isdir(undoDir) == False:
