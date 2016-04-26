@@ -2,9 +2,9 @@
 # coding=utf-8
 
 import os;
-def sshToamsec12_05():
-    cmd = 'ssh -X amsec12-05'
+def sshToDockUbuntu():
+    cmd = 'ssh -X root@138.15.172.114 -p 10322'
     os.system(cmd);
 
 if __name__ == '__main__':
-    sshToamsec12_05();
+    sshToDockUbuntu();
