@@ -10,10 +10,10 @@ import os
 #         echo 3 > /proc/sys/vm/drop_caches
 
 
-def monitorMemory():
+def free_cached_memory():
     cmd = 'sudo sync && sudo sysctl -w vm.drop_caches=3'
     os.system(cmd);
 
 if __name__ == '__main__':
-    monitorMemory();
+    free_cached_memory();
 

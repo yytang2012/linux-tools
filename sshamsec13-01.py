@@ -2,9 +2,12 @@
 # coding=utf-8
 
 import os;
-def sshToamsec13_01():
+
+
+def ssh_nec_amsec1301():
     cmd = 'ssh -X amsec13-01'
     os.system(cmd);
 
+
 if __name__ == '__main__':
-    sshToamsec13_01();
+    ssh_nec_amsec1301();
