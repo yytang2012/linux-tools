@@ -10,6 +10,8 @@ def ubuntu_system_update():
     os.system(cmd2);
     cmd3 = 'sudo apt-get dist-upgrade';  # Installs updates (new ones)
     os.system(cmd3);
+    cmd4 = 'sudo apt-get autoremove';  # Auto remove useless kernels or packages(new ones)
+    os.system(cmd4);
 
 
 if __name__ == '__main__':

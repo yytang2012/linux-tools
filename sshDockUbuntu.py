@@ -5,7 +5,7 @@ import os;
 
 
 def ssh_nec_dock_ubuntu():
-    cmd = 'ssh -X root@138.15.172.114 -p 10322'
+    cmd = 'ssh -X yutang@138.15.172.138'
     os.system(cmd);
 
 
