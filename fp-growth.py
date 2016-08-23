@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 
 """
@@ -7,7 +7,6 @@ Basic usage of the module is very simple:
     > from fp_growth import find_frequent_itemsets
     > find_frequent_itemsets(transactions, minimum_support)
 """
-import os
 from collections import defaultdict, namedtuple
 
 __author__ = 'Yutao Tang <yytang@email.wm.edu>'
@@ -336,7 +335,7 @@ if __name__ == '__main__':
 
     transactions = [['a', 'b'], ['b', 'c', 'd'], ['a', 'c', 'd', 'e'], ['a', 'd', 'e'], ['a', 'b', 'c'],
                     ['a', 'b', 'c', 'd'], ['a'], ['a', 'b', 'c'], ['a', 'b', 'd'], ['b', 'c', 'e']]
-    transactions = [['a', 'c', 'd', 'e'],['a', 'c', 'd', 'e'],['a', 'c', 'd', 'e'],['a', 'c', 'd', 'e']]
+    #transactions = [['a', 'c', 'd', 'e'],['a', 'c', 'd', 'e'],['a', 'c', 'd', 'e'],['a', 'c', 'd', 'e']]
     minsup = 2;
 
     result = []
