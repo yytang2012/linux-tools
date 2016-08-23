@@ -2,7 +2,9 @@
 # coding=utf-8
 import time;
 
-root_dir = '/Data/psql_dump/data_dump';
+from misc import get_start_time, get_elapsed_time
+
+root_dir = '/Data/psql_dump/data_dump_0/'
 
 
 def get_database_name_list(startDate='01/15/2016', days=1):
@@ -10,7 +12,8 @@ def get_database_name_list(startDate='01/15/2016', days=1):
     database_names = [];
     for i in range(0, days):
         d = datetime.datetime.strptime(startDate, '%m/%d/%Y') + datetime.timedelta(i);
-        s = "aero_%Y_%02m_%02d";
+        # s = "aero_%Y_%02m_%02d";
+        s = 'r1508_%Y_%02m_%02d'
         name = d.strftime(s);
         database_names.append(name);
     return database_names;
@@ -36,12 +39,13 @@ def restore_database(database_list):
         end = time.time();
         print("%s is restored. Elapsed Time = %.2fs" % (database, end - start))
 
-
 if __name__ == '__main__':
-    database_name_list = get_database_name_list('07/01/2016', 28)
+    start_date = '01/06/2016'
+    days = 28
+    database_name_list = get_database_name_list(start_date, days)
     print(database_name_list)
-    start = time.time()
+    start_time = get_start_time()
     restore_database(database_name_list)
-    end = time.time()
-    print("Elapsed Time = %.2fs" % (end - start))
+    elapsed_time = get_elapsed_time(start_time);
+    print("Elapsed Time = %s" % elapsed_time)
     print("Task complete!")
