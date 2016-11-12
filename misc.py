@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+import contextlib
 import os
 import time
 
@@ -58,3 +59,14 @@ def get_percentage(num, total):
     percent_string = '%.12f' % new_percent;
     percent_string = '%s%%' % (percent_string.rstrip('0').rstrip('.'));
     return percent_string;
+
+
+@contextlib.contextmanager
+def stopwatch(message):
+    """Context manager to print how long a block of code took."""
+    t0 = time.time()
+    try:
+        yield
+    finally:
+        t1 = time.time()
+        print('Total elapsed time for %s: %.3f' % (message, t1 - t0))
