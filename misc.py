@@ -6,9 +6,9 @@ import time
 
 
 def get_absolute_path(original_path):
-    absolute_path = os.path.expanduser(original_path);
-    absolute_path = os.path.abspath(absolute_path);
-    return absolute_path;
+    absolute_path = os.path.expanduser(original_path)
+    absolute_path = os.path.abspath(absolute_path)
+    return absolute_path
 
 
 def get_start_time():
