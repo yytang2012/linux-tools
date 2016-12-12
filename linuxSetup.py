@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-from misc import *;
+from misc import *
 
 
 def vimrc_setup():
@@ -14,7 +14,8 @@ def vimrc_setup():
 
     if not is_defined(config, vimrc_path):
         current_time = get_current_time()
-        cmd = 'echo "\\\" {0}\nset undofile \nset undodir={1} \n" >> {2}'.format(current_time, undo_directory, vimrc_path)
+        cmd = \
+            'echo "\\\" {0}\nset undofile \nset undodir={1} \n" >> {2}'.format(current_time, undo_directory, vimrc_path)
         os.system(cmd)
 
 
@@ -38,7 +39,7 @@ def bashrc_setup():
 
 
 def main():
-    vimrc_setup();
+    vimrc_setup()
     bashrc_setup()
 
 
