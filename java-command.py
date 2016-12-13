@@ -34,7 +34,7 @@ def main():
         if not arguments['JAVA_VERSION']:
             java_install()
         else:
-            java_version = arguments['openjdk-6-jdk, openjdk-7-jdk, openjdk-8-jdk']
+            java_version = arguments['JAVA_VERSION']
             java_install(java_version)
     elif arguments['switch']:
         switch_java_version()
