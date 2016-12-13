@@ -4,9 +4,9 @@ import os
 
 
 def monitor_disk_usage():
-    cmd = 'watch -n 1 df -m';
-    os.system(cmd);
+    cmd = 'watch -n 1 df -m'
+    os.system(cmd)
 
 
 if __name__ == '__main__':
-    monitor_disk_usage();
+    monitor_disk_usage()

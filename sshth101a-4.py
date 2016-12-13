@@ -10,4 +10,4 @@ def ssh_wm_th101a_4():
 
 
 if __name__ == '__main__':
-    ssh_wm_th101a_4();
+    ssh_wm_th101a_4()
