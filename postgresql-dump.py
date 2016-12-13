@@ -36,15 +36,15 @@ def dump_database(database_name):
     for db in database_name:
         path = os.path.join(data_dir, db)
         if not os.path.isfile(path):
-            print("dumping %s" % db)
+            print("dumping {0}".format(db))
             cmd = cmd_template.format(password, host_name, db)
             os.system(cmd)
         else:
-            print("%s was downloaded".format(db))
+            print("{0} was downloaded".format(db))
 
 
 if __name__ == '__main__':
-    database_name_list = get_database_name_list('08/07/2016', 1)
+    database_name_list = get_database_name_list('08/08/2016', 21)
     print(database_name_list)
     start = time.time()
     dump_database(database_name_list)
