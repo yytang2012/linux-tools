@@ -2,8 +2,9 @@
 # coding=utf-8
 import time
 
-host_name = 'amsec13-02'
-data_dir = '/Data/psql_dump/data_dump_0/'
+host_name = '138.15.172.198'
+# data_dir = '/Data/psql_dump/data_dump_0/'
+data_dir = '/home/yytang/Data/'
 
 
 def db_configuration(host_name='amsec13-02'):
@@ -12,7 +13,7 @@ def db_configuration(host_name='amsec13-02'):
     elif host_name == 'amsec12-05':
         password = "isaisa"
     else:
-        password = ''
+        password = 'isaisa'
     return password
 
 
@@ -31,7 +32,7 @@ def get_database_name_list(startDate='01/15/2016', days=1):
 def dump_database(database_name):
     import os
     password = db_configuration(host_name)
-    cmd_template = 'PGPASSWORD="{0}" pg_dump -C -h {1} -U  postgres {2} > /Data/psql_dump/data_dump_0/{2}'
+    cmd_template = 'PGPASSWORD="{0}" pg_dump -C -h {1} -U  postgres {2} > ' + data_dir + '{2}'
     # cmd = 'PGPASSWORD="isa-REL-aero" pg_dump -C -h amsec13-02 -U  postgres %s > /Data/psql_dump/data_dump_0/%s'
     for db in database_name:
         path = os.path.join(data_dir, db)
@@ -44,7 +45,7 @@ def dump_database(database_name):
 
 
 if __name__ == '__main__':
-    database_name_list = get_database_name_list('08/07/2016', 1)
+    database_name_list = get_database_name_list('07/01/2016', 7)
     print(database_name_list)
     start = time.time()
     dump_database(database_name_list)
