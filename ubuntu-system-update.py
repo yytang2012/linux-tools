@@ -4,14 +4,14 @@ import os
 
 
 def ubuntu_system_update():
-    cmd1 = 'sudo apt-get update';        # Fetches the list of available updates
+    cmd1 = 'sudo apt-get update'        # Fetches the list of available updates
     os.system(cmd1);
-    cmd2 = 'sudo apt-get upgrade';       # Strictly upgrades the current packages
-    os.system(cmd2);
-    cmd3 = 'sudo apt-get dist-upgrade';  # Installs updates (new ones)
-    os.system(cmd3);
-    cmd4 = 'sudo apt-get autoremove';  # Auto remove useless kernels or packages(new ones)
-    os.system(cmd4);
+    cmd2 = 'sudo apt-get upgrade'       # Strictly upgrades the current packages
+    os.system(cmd2)
+    cmd3 = 'sudo apt-get dist-upgrade'  # Installs updates (new ones)
+    os.system(cmd3)
+    # cmd4 = 'sudo apt-get autoremove'  # Auto remove useless kernels or packages(new ones)
+    # os.system(cmd4);
 
 
 if __name__ == '__main__':

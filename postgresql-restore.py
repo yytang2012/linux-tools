@@ -50,8 +50,8 @@ def restore_database(database_list):
 
 
 if __name__ == '__main__':
-    start_date = '08/01/2016'
-    days = 7
+    start_date = '08/08/2016'
+    days = 21
     database_name_list = get_database_name_list(start_date, days)
     print(database_name_list)
     start_time = get_start_time()

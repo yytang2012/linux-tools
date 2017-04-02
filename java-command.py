@@ -12,19 +12,19 @@ import os
 
 
 def java_install(java_version='openjdk-8-jdk'):
-    cmd = 'sudo add-apt-repository ppa:openjdk-r/ppa';
-    os.system(cmd);
-    cmd = 'sudo apt-get update';
-    os.system(cmd);
-    cmd = 'sudo apt-get install {0}'.format(java_version);
-    os.system(cmd);
+    cmd = 'sudo add-apt-repository ppa:openjdk-r/ppa'
+    os.system(cmd)
+    cmd = 'sudo apt-get update'
+    os.system(cmd)
+    cmd = 'sudo apt-get install {0}'.format(java_version)
+    os.system(cmd)
 
 
 def switch_java_version():
-    cmd = 'sudo update-alternatives --config java';
-    os.system(cmd);
-    cmd = 'sudo update-alternatives --config javac';
-    os.system(cmd);
+    cmd = 'sudo update-alternatives --config java'
+    os.system(cmd)
+    cmd = 'sudo update-alternatives --config javac'
+    os.system(cmd)
 
 
 def main():
@@ -41,4 +41,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main();
+    main()
