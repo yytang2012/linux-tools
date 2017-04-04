@@ -3,8 +3,11 @@ Created on Mar 1, 2016
 
 @author: yutang
 """
+from collections import defaultdict
+
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
+import numpy as np
 import os
 
 
@@ -197,29 +200,27 @@ class RPlot(object):
 
 
 def summary_data(dataset):
-    import numpy as np
-    candidates = [i for i in range(0, 15)] + [50]
+    candidates = [i for i in range(0, 50)]
     for res_dict in dataset:
         print("------------------------------------------------------")
         for ii in candidates:
             key = '{0}'.format(ii)
             array = np.array([item[1] for item in res_dict[key]])
-            print("{1:.2f}%".format(key, np.average(array) * 100, np.std(array)))
-            # print("{0:.2f}".format(np.std(array)))
+            # print("{0:.2f}%".format(np.average(array) * 100, np.std(array)))
+            print("{0:.2f}".format(np.std(array)))
             # print("App{0} -- mean : {1:.6f} -- std : {2:.6f}".format(key, np.average(array), np.std(array)))
 
 
 def plot_data(dataset):
     plt = RPlot('top50apps')
-    last_one = 15
-    total = 50
-    plot_candidates = [i for i in range(0, last_one)] + [total]
+    last_one = 50
+    plot_candidates = [i for i in range(0, last_one)]
     x_axis = []
     length = 0
     names = []
+    delta = 1
     for ii in plot_candidates:
         data = []
-        delta = 1
         for dd, res_dict in enumerate(dataset):
             key = '{0}'.format(ii)
             y = [item[1] for item in res_dict[key]]
@@ -228,20 +229,40 @@ def plot_data(dataset):
             x_axis = list(set(x).union(x_axis))
             data.append((x, y))
             if dd == 0:
-                name = list(set([item[0] for item in res_dict[key] if item[0] is not None]))[0]
+                app_names = list(set([item[0] for item in res_dict[key] if item[0] is not None]))
+                name = app_names[0] if len(app_names) != 0 else "unKown"
                 names.append(name)
                 print(name)
-        # data.reverse()
-        if ii != total:
-            title = '{0} :: {1:02d}'.format(names[ii], ii + 1)
-            savedFileName = 'app{0:02d}-{1}'.format(ii + 1, names[ii])
-        else:
-            title = 'Total top {0} apps'.format(total)
-            savedFileName = 'top{0}-app'.format(total)
+        data.reverse()
+        title = '{0} :: {1:02d}'.format(names[ii], ii + 1)
+        savedFileName = 'app{0:02d}-{1}'.format(ii + 1, names[ii])
+
         plt.line_plot(data, x_axis=x_axis, title=title, savedFileName=savedFileName, xlab='Date', ylab='Percentage')
         # for ii, name in enumerate(names):
         #     if ii < 15:
         #         print("|App{0}| {1}|".format(ii+1, name))
+    """ Plot all apps """
+    data = []
+    for dd, res_dict in enumerate(dataset):
+        y_dict = defaultdict(lambda: 0)
+        total = len(plot_candidates)
+        for ii in plot_candidates:
+            key = '{0}'.format(ii)
+            for jj, item in enumerate(res_dict[key]):
+                y_dict[jj] += item[2]
+
+        y = [y_dict[i] for i in range(0, len(y_dict))]
+        x = [i for i in range(delta + 1 + length - len(y), delta + length + 1)]
+        data.append((x, y))
+        array = np.array(y)
+        print("{0:.2f}%".format(np.average(array) * 100))
+        print("{0:.2f}".format(np.std(array)))
+
+    data.reverse()
+    title = 'Total top {0} apps'.format(total)
+    savedFileName = 'top{0}-app'.format(total)
+    plt.line_plot(data, x_axis=x_axis, title=title, savedFileName=savedFileName, xlab='Date', ylab='Percentage')
+
 
 
 def print_names(dataset):
@@ -291,7 +312,8 @@ if __name__ == '__main__':
     #  args = [(x1, y1), (x, y)]
     import json
 
-    with open('/home/yytang/Documents/apps/task6/dataset-app-150.txt', 'r') as f:
+    # with open('/home/yytang/Documents/apps/task6/dataset-app-150.txt', 'r') as f:
+    with open('/home/yytang/Documents/apps/task5/task5-dataset-6.txt', 'r') as f:
         dataset_string = f.read()
         dataset = json.loads(dataset_string)
     # print_names(dataset)
