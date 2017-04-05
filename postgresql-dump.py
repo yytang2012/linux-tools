@@ -2,7 +2,7 @@
 # coding=utf-8
 import time
 
-host_name = 'amsec13-02'
+host_name = 'amsec13-03'
 data_dir = '/Data/psql_dump/data_dump_0/'
 
 

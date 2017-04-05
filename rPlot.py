@@ -205,15 +205,16 @@ def summary_data(dataset):
         print("------------------------------------------------------")
         for ii in candidates:
             key = '{0}'.format(ii)
-            array = np.array([item[1] for item in res_dict[key]])
-            # print("{0:.2f}%".format(np.average(array) * 100, np.std(array)))
-            print("{0:.2f}".format(np.std(array)))
-            # print("App{0} -- mean : {1:.6f} -- std : {2:.6f}".format(key, np.average(array), np.std(array)))
+            value = res_dict[key]
+            array = np.array([item[1] for item in value])
+            # print("{0:.2f}%".format(np.average(array) * 100))
+            # print("{0:.2f}".format(np.std(array)))
+            print("name: {0} -- mean : {1:.6f} -- std : {2:.6f}".format(value[0][0], np.average(array), np.std(array)))
 
 
 def plot_data(dataset):
     plt = RPlot('top50apps')
-    last_one = 50
+    last_one = 150
     plot_candidates = [i for i in range(0, last_one)]
     x_axis = []
     length = 0
@@ -233,7 +234,7 @@ def plot_data(dataset):
                 name = app_names[0] if len(app_names) != 0 else "unKown"
                 names.append(name)
                 print(name)
-        data.reverse()
+        # data.reverse()
         title = '{0} :: {1:02d}'.format(names[ii], ii + 1)
         savedFileName = 'app{0:02d}-{1}'.format(ii + 1, names[ii])
 
@@ -258,7 +259,7 @@ def plot_data(dataset):
         print("{0:.2f}%".format(np.average(array) * 100))
         print("{0:.2f}".format(np.std(array)))
 
-    data.reverse()
+    # data.reverse()
     title = 'Total top {0} apps'.format(total)
     savedFileName = 'top{0}-app'.format(total)
     plt.line_plot(data, x_axis=x_axis, title=title, savedFileName=savedFileName, xlab='Date', ylab='Percentage')
@@ -312,11 +313,11 @@ if __name__ == '__main__':
     #  args = [(x1, y1), (x, y)]
     import json
 
-    # with open('/home/yytang/Documents/apps/task6/dataset-app-150.txt', 'r') as f:
-    with open('/home/yytang/Documents/apps/task5/task5-dataset-6.txt', 'r') as f:
+    with open('/home/yytang/Documents/apps/task6/dataset-apps-150.txt', 'r') as f:
+    # with open('/home/yytang/Documents/apps/task5/task5-dataset-6.txt', 'r') as f:
         dataset_string = f.read()
         dataset = json.loads(dataset_string)
     # print_names(dataset)
-    # summary_data(dataset)
-    plot_data(dataset)
+    summary_data(dataset)
+    # plot_data(dataset)
     # plt.line_plot(args, x_axis=x, title='App1', savedFileName='app01', xlab='Date', ylab='Percentage')
