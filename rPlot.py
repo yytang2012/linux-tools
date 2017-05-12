@@ -200,21 +200,59 @@ class RPlot(object):
 
 
 def summary_data(dataset):
-    candidates = [i for i in range(0, 50)]
-    for res_dict in dataset:
-        print("------------------------------------------------------")
-        for ii in candidates:
-            key = '{0}'.format(ii)
-            value = res_dict[key]
-            array = np.array([item[1] for item in value])
+    candidates = [i for i in range(0, 150)]
+    names = []
+    new_dataset = []
+
+    """ Calculate names and idx_to_name_dict """
+    data_dict = dataset[0]
+    for idx in candidates:
+        key = '{0}'.format(idx)
+        value = data_dict[key]
+        name = list(set([item[0] for item in value if item[0] is not None]))[0]
+        if name == 'python':
+            name = 'python2.7'
+        if name not in names:
+            names.append(name)
+
+    for top_idx, data_dict in enumerate(dataset):
+        print("---------------------------- {0} --------------------------".format(top_idx))
+        res_dict = defaultdict(lambda: [])
+        for idx in candidates:
+            key = '{0}'.format(idx)
+            value = data_dict[key]
+            name_list = list(set([item[0] for item in value if item[0] is not None]))
+            if len(name_list) == 0:
+                continue
+            name = name_list[0]
+            if name == 'python':
+                name = 'python2.7'
+            percent_array = [(item[3], item[4]) for item in value]
+            res_dict[name].append(percent_array)
+        for idx, name in enumerate(names):
+            arrays = res_dict[name]
+            if len(arrays) == 0:
+                # print("{0}".format(name))
+                # print("0.00%")
+                print("0")
+                continue
+            array = []
+            for i in range(0, len(arrays[0])):
+                tmp = (0.0, 0.0)
+                for j in range(0, len(arrays)):
+                    tmp = (tmp[0] + arrays[j][i][0], tmp[1] + arrays[j][i][1])
+                array.append(tmp)
+            array = [item[0]/item[1] for item in array if item[1] != 0]
+            array = np.array(array)
+            # print(name)
             # print("{0:.2f}%".format(np.average(array) * 100))
-            # print("{0:.2f}".format(np.std(array)))
-            print("name: {0} -- mean : {1:.6f} -- std : {2:.6f}".format(value[0][0], np.average(array), np.std(array)))
+            print("{0:.2f}".format(np.std(array)))
+            # print("index: {0}, name: {1}, mean: {2:.6f}, std: {3:.6f}".format(idx, name, np.average(array), np.std(array)))
 
 
 def plot_data(dataset):
     plt = RPlot('top50apps')
-    last_one = 150
+    last_one = 50
     plot_candidates = [i for i in range(0, last_one)]
     x_axis = []
     length = 0
@@ -224,7 +262,8 @@ def plot_data(dataset):
         data = []
         for dd, res_dict in enumerate(dataset):
             key = '{0}'.format(ii)
-            y = [item[1] for item in res_dict[key]]
+            print(res_dict[key])
+            y = [(item[3]-item[6])/(item[4]-item[6]) if item[3] != 0 else 0 for item in res_dict[key]]
             length = len(y) if len(y) > length else length
             x = [i for i in range(delta + 1 + length - len(y), delta + length + 1)]
             x_axis = list(set(x).union(x_axis))
@@ -264,6 +303,82 @@ def plot_data(dataset):
     savedFileName = 'top{0}-app'.format(total)
     plt.line_plot(data, x_axis=x_axis, title=title, savedFileName=savedFileName, xlab='Date', ylab='Percentage')
 
+def plot_data_2(dataset):
+    plt = RPlot('top50apps')
+    last_one = 5
+    plot_candidates = [i for i in range(0, last_one)]
+    x_axis = []
+    length = 0
+    names = []
+    delta = 1
+    total1 = 0
+    for res_dict in dataset:
+        for dd in range(0, 3):
+            print("****************")
+            dataset = [item[dd] for item in res_dict.values()]
+            total1 = sum([item[4] for item in dataset])
+            total2 = sum([item[4]-item[6] for item in dataset])
+            total3 = sum([item[4]-item[3] for item in dataset])
+            for idx in plot_candidates:
+                key = '{0}'.format(idx)
+                item = res_dict[key]
+                print(item[dd][0])
+                t1 = item[dd][4]
+                t2 = item[dd][4] - item[dd][6]
+                t3 = item[dd][4] - item[dd][3]
+                total1 -= t1
+                total2 -= t2
+                total3 -= t3
+                print("{0}\n{1}\n{2}".format(t1, t2, t3))
+                print('-------')
+            print(total1, total2, total3)
+            print('-------')
+
+
+    # for ii in plot_candidates:
+    #     data = []
+    #     for dd, res_dict in enumerate(dataset):
+    #         key = '{0}'.format(ii)
+    #         print(res_dict[key])
+    #         y = [(item[3]-item[6])/(item[4]-item[6]) if item[3] != 0 else 0 for item in res_dict[key]]
+    #         length = len(y) if len(y) > length else length
+    #         x = [i for i in range(delta + 1 + length - len(y), delta + length + 1)]
+    #         x_axis = list(set(x).union(x_axis))
+    #         data.append((x, y))
+    #         if dd == 0:
+    #             app_names = list(set([item[0] for item in res_dict[key] if item[0] is not None]))
+    #             name = app_names[0] if len(app_names) != 0 else "unKown"
+    #             names.append(name)
+    #             print(name)
+    #     # data.reverse()
+    #     title = '{0} :: {1:02d}'.format(names[ii], ii + 1)
+    #     savedFileName = 'app{0:02d}-{1}'.format(ii + 1, names[ii])
+    #
+    #     plt.line_plot(data, x_axis=x_axis, title=title, savedFileName=savedFileName, xlab='Date', ylab='Percentage')
+    #     # for ii, name in enumerate(names):
+    #     #     if ii < 15:
+    #     #         print("|App{0}| {1}|".format(ii+1, name))
+    # """ Plot all apps """
+    # data = []
+    # for dd, res_dict in enumerate(dataset):
+    #     y_dict = defaultdict(lambda: 0)
+    #     total = len(plot_candidates)
+    #     for ii in plot_candidates:
+    #         key = '{0}'.format(ii)
+    #         for jj, item in enumerate(res_dict[key]):
+    #             y_dict[jj] += item[2]
+    #
+    #     y = [y_dict[i] for i in range(0, len(y_dict))]
+    #     x = [i for i in range(delta + 1 + length - len(y), delta + length + 1)]
+    #     data.append((x, y))
+    #     array = np.array(y)
+    #     print("{0:.2f}%".format(np.average(array) * 100))
+    #     print("{0:.2f}".format(np.std(array)))
+    #
+    # # data.reverse()
+    # title = 'Total top {0} apps'.format(total)
+    # savedFileName = 'top{0}-app'.format(total)
+    # plt.line_plot(data, x_axis=x_axis, title=title, savedFileName=savedFileName, xlab='Date', ylab='Percentage')
 
 
 def print_names(dataset):
@@ -313,11 +428,11 @@ if __name__ == '__main__':
     #  args = [(x1, y1), (x, y)]
     import json
 
-    with open('/home/yytang/Documents/apps/task6/dataset-apps-150.txt', 'r') as f:
-    # with open('/home/yytang/Documents/apps/task5/task5-dataset-6.txt', 'r') as f:
+    with open('/home/yytang/Documents/apps/new-task6/dataset-50.txt', 'r') as f:
+        # with open('/home/yytang/Documents/apps/task5/task5-dataset-6.txt', 'r') as f:
         dataset_string = f.read()
         dataset = json.loads(dataset_string)
     # print_names(dataset)
-    summary_data(dataset)
-    # plot_data(dataset)
+    # summary_data(dataset)
+    plot_data(dataset)
     # plt.line_plot(args, x_axis=x, title='App1', savedFileName='app01', xlab='Date', ylab='Percentage')
