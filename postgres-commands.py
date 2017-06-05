@@ -16,12 +16,14 @@ class ChoicesCompleter(object):
 
 
 class Postgres(object):
+    # data_dir = '/Data/psql_dump/data_dump_0/'
     data_dir = '/Data/psql_dump/data_dump_0/'
     host_to_password_dict = {
         'amsec13-02': ('postgres', "isa-REL-aero"),
         'amsec13-03': ('postgres', "isaisa"),
         'amsec12-05': ('postgres', "isaisa"),
         'asi-stable': ('asi', "isa-REL-crimson"),
+        'localhost': ('postgres', "isaisa"),
     }
 
     def __init__(self, start_date='01/15/2016', days=1, host_name='amsec12-05'):
@@ -34,9 +36,9 @@ class Postgres(object):
         database_names = []
         for i in range(0, days):
             d = datetime.datetime.strptime(start_date, '%m/%d/%Y') + datetime.timedelta(i)
-            s = "crimson_%Y_%02m_%02d"
+            # s = "crimson_%Y_%02m_%02d"
             # s = "beige_%Y_%02m_%02d"
-            # s = "aero_%Y_%02m_%02d"
+            s = "aero_%Y_%02m_%02d"
             # s = 'r1508_%Y_%02m_%02d'
             name = d.strftime(s)
             database_names.append(name)
@@ -46,12 +48,13 @@ class Postgres(object):
     def dump_database(self):
         import os
         cmd_template = 'PGPASSWORD="{password}" pg_dump -C -h {host_name} -U  {user} {db_name} > ' \
-                       '/Data/psql_dump/data_dump_0/{db_name}'
+                       '{data_directory}/{db_name}'
         for db in self.database_names:
             path = os.path.join(self.data_dir, db)
             if not os.path.isfile(path):
                 print("dumping {db_name}".format(db_name=db))
-                cmd = cmd_template.format(password=self.password, host_name=self.host_name, user=self.user, db_name=db)
+                cmd = cmd_template.format(password=self.password, host_name=self.host_name, user=self.user,
+                                          data_directory=self.data_dir, db_name=db)
                 os.system(cmd)
             else:
                 print("{db_name} was downloaded".format(db_name=db))
@@ -81,9 +84,9 @@ class Postgres(object):
 
 
 if __name__ == '__main__':
-    host_name = 'asi-stable'
-    start_date = '05/01/2017'
-    days = 3
+    host_name = 'localhost'
+    start_date = '07/01/2017'
+    days = 28
     postgres = Postgres(host_name=host_name, start_date=start_date, days=days)
 
     parser = argparse.ArgumentParser()
