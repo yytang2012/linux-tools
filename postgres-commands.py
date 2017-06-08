@@ -80,7 +80,6 @@ if __name__ == '__main__':
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     with stopwatch('Database dump'):
-        print(args)
         """ Get the host_name """
         if args.Host_name is None:
             host_name = 'localhost'
@@ -97,7 +96,7 @@ if __name__ == '__main__':
         if args.days is None:
             days = 28
         else:
-            days = args.days
+            days = int(args.days)
 
         """ Get the root directory """
         if args.root_dir is None:
@@ -105,6 +104,9 @@ if __name__ == '__main__':
         else:
             root_dir = args.root_dir
 
+        print(" host_name: {host_name}\n start_data: {start_date}\n days: {days}\n root_dir: {root_dir}".format(
+            host_name=host_name, start_date=start_date, days=days, root_dir=root_dir
+        ))
         postgres = Postgres(host_name=host_name, start_date=start_date, days=days, root_dir=root_dir)
 
         """ extract host_name, start_date, days """
