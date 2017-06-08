@@ -3,7 +3,6 @@
 import contextlib
 import os
 import time
-
 import errno
 
 
@@ -65,15 +64,32 @@ def get_percentage(num, total):
     return percent_string
 
 
+def get_elapsed_time(_start_time):
+    _stop_time = time.time()
+    # elapsedTime = time.strftime("%H hours %M minutes %S seconds", time.gmtime(end - start))
+    seconds = _stop_time - _start_time
+    hours = seconds // (60 * 60)
+    seconds %= (60 * 60)
+    minutes = seconds // 60
+    seconds %= 60
+    if hours > 0:
+        _elapsed_time = '%d hours %d minutes %.2f seconds' % (hours, minutes, seconds)
+    elif minutes > 0:
+        _elapsed_time = '%d minutes %.2f seconds' % (minutes, seconds)
+    else:
+        _elapsed_time = '%.2f seconds' % seconds
+
+    return _elapsed_time
+
+
 @contextlib.contextmanager
-def stopwatch(message):
-    """Context manager to print how long a block of code took."""
-    t0 = time.time()
+def stop_watch(message):
+    _start_time = time.time()
     try:
         yield
     finally:
-        t1 = time.time()
-        print('Total elapsed time for %s: %.3f' % (message, t1 - t0))
+        _elapsed_time = get_elapsed_time(_start_time)
+        print("Total elapsed time for {0}: {1}".format(message, _elapsed_time))
 
 
 def get_database_names(start_date='02/01/2017', days=1):
@@ -112,7 +128,6 @@ def make_sure_path_exists(path):
 if __name__ == '__main__':
     start_date = '12/20/2017'
     days = 17
-    database_names = get_database_names(start_date, days)
-    print(database_names)
-    data_dir = '~/Data/tt'
-    make_sure_path_exists(data_dir)
+    with stop_watch("test"):
+        database_names = get_database_names(start_date, days)
+        print(database_names)
