@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
-# PYTHON_ARGCOMPLETE_OK
+""" PYTHON_ARGCOMPLETE_OK """
 
-from misc import stopwatch
+from misc import stopwatch, get_database_names
 import argcomplete
 import argparse
 
@@ -16,42 +16,30 @@ class ChoicesCompleter(object):
 
 
 class Postgres(object):
-    data_dir = '/Data/psql_dump/data_dump_0/'
     host_to_password_dict = {
         'amsec13-02': ('postgres', "isa-REL-aero"),
         'amsec13-03': ('postgres', "isaisa"),
         'amsec12-05': ('postgres', "isaisa"),
         'asi-stable': ('asi', "isa-REL-crimson"),
+        'localhost': ('postgres', "isaisa"),
     }
 
-    def __init__(self, start_date='01/15/2016', days=1, host_name='amsec12-05'):
+    def __init__(self, start_date='01/15/2016', days=1, host_name='amsec12-05',
+                 root_dir='/Data/psql_dump/data_dump_0/'):
         self.host_name = host_name
         self.user, self.password = self.host_to_password_dict[host_name]
-        self.database_names = self.get_database_names(start_date, days)
-
-    def get_database_names(self, start_date='01/15/2016', days=1):
-        import datetime
-        database_names = []
-        for i in range(0, days):
-            d = datetime.datetime.strptime(start_date, '%m/%d/%Y') + datetime.timedelta(i)
-            s = "crimson_%Y_%02m_%02d"
-            # s = "beige_%Y_%02m_%02d"
-            # s = "aero_%Y_%02m_%02d"
-            # s = 'r1508_%Y_%02m_%02d'
-            name = d.strftime(s)
-            database_names.append(name)
-        print(database_names)
-        return database_names
+        self.database_names = get_database_names(start_date, days)
+        self.root_dir = root_dir
 
     def dump_database(self):
         import os
-        cmd_template = 'PGPASSWORD="{password}" pg_dump -C -h {host_name} -U  {user} {db_name} > ' \
-                       '/Data/psql_dump/data_dump_0/{db_name}'
+        cmd_template = 'PGPASSWORD="{password}" pg_dump -C -h {host_name} -U  {user} {db_name} > {root_dir}/{db_name}'
         for db in self.database_names:
-            path = os.path.join(self.data_dir, db)
+            path = os.path.join(self.root_dir, db)
             if not os.path.isfile(path):
                 print("dumping {db_name}".format(db_name=db))
-                cmd = cmd_template.format(password=self.password, host_name=self.host_name, user=self.user, db_name=db)
+                cmd = cmd_template.format(password=self.password, host_name=self.host_name, user=self.user, db_name=db,
+                                          root_dir=self.root_dir)
                 os.system(cmd)
             else:
                 print("{db_name} was downloaded".format(db_name=db))
@@ -61,7 +49,7 @@ class Postgres(object):
         for db_name in self.database_names:
             print("Start to restore {db_name}".format(db_name=db_name))
             with stopwatch("{0}".format(db_name)):
-                file_path = os.path.join(self.data_dir, db_name)
+                file_path = os.path.join(self.root_dir, db_name)
                 if not os.path.isfile(file_path):
                     continue
                 """Create a database"""
@@ -81,17 +69,45 @@ class Postgres(object):
 
 
 if __name__ == '__main__':
-    host_name = 'asi-stable'
-    start_date = '05/01/2017'
-    days = 3
-    postgres = Postgres(host_name=host_name, start_date=start_date, days=days)
-
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--type", help='type your postgres commands').completer = \
         ChoicesCompleter(('dump', 'restore', 'drop', 'test'))
+    parser.add_argument("-H", "--Host_name", help='specify the host name').completer = \
+        ChoicesCompleter(('localhost', 'amsec13-02', 'amsec13-03', 'amsec12-05', 'asi-stable'))
+    parser.add_argument("-d", "--days", help='specify how many days')
+    parser.add_argument("-s", "--start_date", help='specify the start date')
+    parser.add_argument("-r", "--root_dir", help='specify the root directory')
     argcomplete.autocomplete(parser)
     args = parser.parse_args()
     with stopwatch('Database dump'):
+        print(args)
+        """ Get the host_name """
+        if args.Host_name is None:
+            host_name = 'localhost'
+        else:
+            host_name = args.Host_name
+
+        """ Get the start_date """
+        if args.start_date is None:
+            start_date = '07/01/2016'
+        else:
+            start_date = args.start_date
+
+        """ Get the days """
+        if args.days is None:
+            days = 28
+        else:
+            days = args.days
+
+        """ Get the root directory """
+        if args.root_dir is None:
+            root_dir = '/Migration/psql_dump/'
+        else:
+            root_dir = args.root_dir
+
+        postgres = Postgres(host_name=host_name, start_date=start_date, days=days, root_dir=root_dir)
+
+        """ extract host_name, start_date, days """
         if args.type == 'dump':
             postgres.dump_database()
         elif args.type == 'restore':

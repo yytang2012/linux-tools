@@ -4,6 +4,8 @@ import contextlib
 import os
 import time
 
+import errno
+
 
 def get_absolute_path(original_path):
     absolute_path = os.path.expanduser(original_path)
@@ -75,12 +77,13 @@ def stopwatch(message):
 
 
 def get_database_names(start_date='02/01/2017', days=1):
-    """ Used for operations related to postgres """
     import datetime
     threshold1 = '03/01/2016'
     t_date1 = datetime.datetime.strptime(threshold1, '%m/%d/%Y')
     threshold2 = '01/01/2017'
     t_date2 = datetime.datetime.strptime(threshold2, '%m/%d/%Y')
+    threshold3 = '05/01/2017'
+    t_date3 = datetime.datetime.strptime(threshold3, '%m/%d/%Y')
     database_names = []
     for i in range(0, days):
         d = datetime.datetime.strptime(start_date, '%m/%d/%Y') + datetime.timedelta(i)
@@ -88,15 +91,28 @@ def get_database_names(start_date='02/01/2017', days=1):
             database_template = 'r1508_%Y_%02m_%02d'
         elif d < t_date2:
             database_template = 'aero_%Y_%02m_%02d'
-        else:
+        elif d < t_date3:
             database_template = 'beige_%Y_%02m_%02d'
+        else:
+            database_template = "crimson_%Y_%02m_%02d"
         name = d.strftime(database_template)
         database_names.append(name)
     return database_names
 
 
+def make_sure_path_exists(path):
+    absolute_path = os.path.expanduser(path)
+    try:
+        os.makedirs(absolute_path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+
 if __name__ == '__main__':
-    start_date = '12/20/2016'
+    start_date = '12/20/2017'
     days = 17
     database_names = get_database_names(start_date, days)
     print(database_names)
+    data_dir = '~/Data/tt'
+    make_sure_path_exists(data_dir)
