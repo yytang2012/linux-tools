@@ -1,0 +1,23 @@
+1. View linux login history
+$last -a
+
+2. Get the information about the users and the processes they are running
+step 1: obtain the list of the sessions
+$ systemd-loginctl list-sessions
+   SESSION        UID USER             SEAT
+       c89       1000 jdebp            seat0
+step 2: for each session you are interested in show its status
+$ systemd-loginctl session-status c89
+
+c89 - jdebp (1000)
+       Since: Tue, 07 Oct 2014 20:16:20 +0100; 15s ago
+      Leader: 24453 (3)
+        Seat: seat0; vc6
+         TTY: /dev/tty6
+     Service: login; type tty; class user
+      Active: yes
+      CGroup: /user/jdebp/c89
+          ├ 24453 login
+          ├ 25661 -zsh
+          └ 25866 systemd-loginctl session-status c89
+
